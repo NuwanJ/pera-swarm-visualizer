@@ -69,6 +69,7 @@
       "prettier": "^2.2.1",
       "three": "^0.118.3",
       "three-stl-loader": "^1.0.6",
+      "threear": "^1.0.0-alpha.5",
       "update": "^0.7.4"
    }
 }

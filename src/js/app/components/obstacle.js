@@ -8,6 +8,7 @@ const OBSTACLE_PREFIX = 'obstacle_';
 export default class Obstacle {
     constructor(scene, callback) {
         this.scene = scene;
+        this.scale = scene_scale;
 
         if (callback != undefined) {
             callback();
@@ -38,20 +39,20 @@ export default class Obstacle {
         this.deleteIfExists(id);
 
         // Add the mesh object to arena
-        this.scene.add(mesh);
+        window.markerGroup.add(mesh);
 
         // update the position of the object
         if (obstacle.position != undefined) {
             const { x, y } = obstacle.position;
             const z = this.calculateZ(obstacle);
-
-            mesh.position.set(x, y, z);
+            mesh.scale.set(this.scale,this.scale,this.scale);
+            mesh.position.set(this.scale*x,this.scale*z,-1*this.scale*y);
         }
 
         // Rotate the object, after translate degrees into radians
         if (obstacle.rotation != undefined) {
             const { x, y, z } = obstacle.rotation;
-            const radX = ((90 + x) / 360) * 2 * Math.PI; // transformation due to coordinate system
+            const radX = (x / 360) * 2 * Math.PI; // transformation due to coordinate system
             const radY = (y / 360) * 2 * Math.PI;
             const radZ = (z / 360) * 2 * Math.PI;
 
@@ -153,24 +154,24 @@ export default class Obstacle {
         // Delete obstacle if it already exists
 
         const name = OBSTACLE_PREFIX + id;
-        const obstacle = this.scene.getObjectByName(name);
+        const obstacle = window.markerGroup.getObjectByName(name);
 
         if (obstacle != undefined) {
-            this.scene.remove(obstacle);
+            window.markerGroup.remove(obstacle);
             console.log('Deleted>', name);
         }
     }
 
     deleteAll() {
         // Delete all obstacles
-        const objects = this.scene.children;
+        const objects = window.markerGroup.children;
 
         Object.entries(objects).forEach((obj) => {
             const name = obj[1]['name'];
 
             if (name.startsWith(OBSTACLE_PREFIX)) {
                 console.log('Deleted>', name);
-                this.scene.remove(obj[1]);
+                window.markerGroup.remove(obj[1]);
             }
         });
     }

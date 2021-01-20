@@ -15,11 +15,11 @@ export default class Camera {
             Config.camera.near,
             Config.camera.far
         );
-        this.threeCamera.position.set(Config.camera.posX, Config.camera.posY, Config.camera.posZ);
-        this.threeCamera.up.set(0, 0, 1);
+        //this.threeCamera.position.set(Config.camera.posX, Config.camera.posY, Config.camera.posZ);
+        //this.threeCamera.up.set(0, 0, 1);
 
         // Initial sizing
-        this.updateSize(renderer);
+        //this.updateSize(renderer);
 
         // Listeners
         window.addEventListener('resize', () => this.updateSize(renderer), false);
@@ -27,9 +27,9 @@ export default class Camera {
 
     updateSize(renderer) {
         // Update camera aspect ratio with window aspect ratio
-        this.threeCamera.aspect = renderer.domElement.width / renderer.domElement.height;
+        //this.threeCamera.aspect = renderer.domElement.width / renderer.domElement.height;
 
         // Always call updateProjectionMatrix on camera change
-        this.threeCamera.updateProjectionMatrix();
+        //this.threeCamera.updateProjectionMatrix();
     }
 }

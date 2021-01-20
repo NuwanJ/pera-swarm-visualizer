@@ -10,11 +10,22 @@ export default class Renderer {
         this.container = container;
 
         // Create WebGL renderer and set its antialias
-        this.threeRenderer = new THREE.WebGLRenderer({ antialias: true });
+        this.threeRenderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true
+        });
 
         // Set clear color to fog to enable fog or to hex color for no fog
-        this.threeRenderer.setClearColor(scene.fog.color);
+        //this.threeRenderer.setClearColor(scene.fog.color);
+        this.threeRenderer.setClearColor(new THREE.Color('lightgrey'), 0)
+
         this.threeRenderer.setPixelRatio(window.devicePixelRatio); // For retina
+
+        this.threeRenderer.setSize( window.innerWidth, window.innerHeight );
+
+        this.threeRenderer.domElement.style.position = 'absolute'
+        this.threeRenderer.domElement.style.top = '0px'
+        this.threeRenderer.domElement.style.left = '0px'
 
         // Appends canvas
         container.appendChild(this.threeRenderer.domElement);

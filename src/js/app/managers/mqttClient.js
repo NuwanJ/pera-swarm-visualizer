@@ -36,7 +36,8 @@ const TOPIC_MANAGEMENT_VISUALIZER = 'management/visualizer';
 // -----------------------------------------------------------------------------
 
 export default class MQTTClient {
-    constructor(scene) {
+    constructor(scene, markerGroup) {
+        this.markerGroup = markerGroup;
         this.scene = scene;
         this.robot = new Robot(scene);
         this.obstacles = new Obstacle(scene);

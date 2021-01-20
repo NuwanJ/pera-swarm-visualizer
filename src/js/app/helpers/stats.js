@@ -9,7 +9,7 @@ export default class Stats {
     setUp() {
         bS = new BrowserStats();
         glS = new glStats();
-        tS = new threeStats(this.renderer.threeRenderer);
+        tS = new threeStats(this.renderer);
 
         rS = new rStats({
             CSSPath: './css/',

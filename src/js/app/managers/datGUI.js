@@ -5,8 +5,10 @@ export default class DatGUI {
     constructor(main) {
         this.gui = new dat.GUI();
 
-        this.camera = main.camera.threeCamera;
-        this.controls = main.controls.threeControls;
+        //this.camera = main.camera.threeCamera;
+        this.camera = main.camera;
+        
+        //this.controls = main.controls.threeControls;
         this.light = main.light;
         this.scene = main.scene;
 

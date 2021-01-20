@@ -2,7 +2,7 @@ import TWEEN from '@tweenjs/tween.js';
 
 // This object contains the state of the app
 export default {
-    scale: 0.05,
+    scale: 0.025,
     arena: {
         size: 300,
         minX: -140,
@@ -19,7 +19,7 @@ export default {
         channel: 'v1'
     },
     isDev: true,
-    isShowingStats: false, /* Not working so far */
+    isShowingStats: false,
     isLoaded: false,
     isTweening: false,
     isRotating: false,

@@ -2,50 +2,34 @@
 import * as THREE from 'three';
 import * as THREEAR from 'threear';
 
+import TWEEN, { update } from '@tweenjs/tween.js';
+
 // Components
 import Renderer from './components/renderer';
 import Camera from './components/camera';
 import Light from './components/light';
 import Controls from './components/controls';
 import Geometry from './components/geometry';
+import Environment from './components/environment';
 
 // Config data
 import Config from './../data/config';
 
-import TWEEN, { update } from '@tweenjs/tween.js';
-
 // Helpers
 import Stats from './helpers/stats';
+//import MeshHelper from './helpers/meshHelper';
 
-// import MeshHelper from './helpers/meshHelper';
-//
-// // Model
-// import Texture from './model/texture';
-// import Model from './model/model';
-//
-// // Managers
-// import Interaction from './managers/interaction';
-// import DatGUI from './managers/datGUI';
+// Managers
+import Interaction from './managers/interaction';
+import DatGUI from './managers/datGUI';
 
 // Newly implemented classes
 import MQTTClient from './managers/mqttClient';
 
-
-//
-// // STLLoader
-// var STLLoader = require('three-stl-loader')(THREE);
-//
-
-// Camera
-var camera;
-
 // For click event on robots
+var camera;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-
-//---------------------------------------
-//var renderer;
-// -------------------------------------
 
 // This class instantiates and ties all of the components together, starts the loading process and renders the main loop
 export default class Main {
@@ -57,10 +41,9 @@ export default class Main {
             Config.dpr = window.devicePixelRatio;
         }
 
-        // Set up rStats if dev environment
-        if (Config.isDev && Config.isShowingStats) {
-            this.stats = new Stats(this.renderer);
-            this.stats.setUp();
+        // Set up gui
+        if (Config.isDev) {
+            // this.gui = new DatGUI(this)
         }
 
         // Main scene creation, and set global scale
@@ -91,6 +74,14 @@ export default class Main {
 
         this.mqtt = new MQTTClient(scene, markerGroup);
 
+
+
+        // Set up rStats if dev environment
+        if (Config.isDev && Config.isShowingStats) {
+            this.stats = new Stats(renderer);
+            this.stats.setUp();
+        }
+
         THREEAR.initialize({ source: source }).then((controller) => {
 
             // add a torus knot
@@ -113,25 +104,7 @@ export default class Main {
             // -------------------------------------------------------
             // Create the environment
 
-            var geometry = new THREE.PlaneBufferGeometry(Config.arena.size, Config.arena.size);
-            var material = new THREE.MeshPhongMaterial({
-                color: 0x999999,
-                depthWrite: false
-            });
-            var ground = new THREE.Mesh(geometry, material);
-            ground.rotation.x = -Math.PI / 2;
-            ground.scale.set(scene_scale,scene_scale,scene_scale);
-            ground.position.set(0, 0, 0);
-            ground.material.opacity = 0.5;
-            ground.receiveShadow = true;
-            markerGroup.add(ground);
-
-            var grid = new THREE.GridHelper(Config.arena.size, 30, 0x000000, 0x5b5b5b);
-            grid.position.set(0, 0, 0);
-            grid.scale.set(scene_scale,scene_scale,scene_scale);
-            grid.material.opacity = 0.35;
-            grid.material.transparent = true;
-            markerGroup.add(grid);
+            this.environment = new Environment();
 
             // -------------------------------------------------------
 
@@ -222,16 +195,7 @@ export default class Main {
     //     const lights = ['ambient', 'directional', 'point', 'hemi'];
     //     lights.forEach((light) => this.light.place(light));
     //
-    //     // Set up rStats if dev environment
-    //     // if (Config.isDev && Config.isShowingStats) {
-    //     //     this.stats = new Stats(this.renderer);
-    //     //     this.stats.setUp();
-    //     // }
-    //
-    //     // Set up gui
-    //     // if (Config.isDev) {
-    //     //     this.gui = new DatGUI(this)
-    //     // }
+
     //
     //     // Instantiate texture class
     //     this.texture = new Texture();
@@ -240,26 +204,6 @@ export default class Main {
     //     this.texture.load().then(() => {
     //         this.manager = new THREE.LoadingManager();
     //
-    //         // Create the environment ---------------------------------------------
-    //         // var geometry = new THREE.PlaneBufferGeometry(Config.arena.size, Config.arena.size);
-    //         // var material = new THREE.MeshPhongMaterial({
-    //         //     color: 0x999999,
-    //         //     depthWrite: false
-    //         // });
-    //         // var ground = new THREE.Mesh(geometry, material);
-    //         // ground.position.set(0, 0, 0);
-    //         // //ground.rotation.x = - Math.PI / 2;
-    //         // ground.receiveShadow = true;
-    //         // scene.add(ground);
-    //         //
-    //         // var grid = new THREE.GridHelper(Config.arena.size, 30, 0x000000, 0x5b5b5b);
-    //         // grid.rotation.x = -Math.PI / 2;
-    //         // grid.position.set(0, 0, 0);
-    //         // grid.material.opacity = 0.35;
-    //         // grid.material.transparent = true;
-    //         // scene.add(grid);
-    //
-    //         // -----------------------------------------------------------------
     //
     //         // -----------------------------------------------------------------
     //
@@ -308,7 +252,7 @@ export default class Main {
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-        raycaster.setFromCamera(mouse, camera.threeCamera);
+        raycaster.setFromCamera(mouse, camera);
 
         const intersects = raycaster.intersectObjects(scene.children);
         if (intersects.length > 0) {
